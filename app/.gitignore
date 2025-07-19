@@ -76,4 +76,5 @@ yarn-error.*
 # typescript
 *.tsbuildinfo
 
-# @end expo-cli
+# Jest snapshots
+components/__tests__/__snapshots__/
