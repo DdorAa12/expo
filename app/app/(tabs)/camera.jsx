@@ -4,9 +4,9 @@ import { Camera, CameraCapturedPicture } from 'expo-camera';
 import * as FileSystem from 'expo-file-system';
 
 export default function CameraScreen() {
-  const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [photoUri, setPhotoUri] = useState<string | null>(null);
-  const cameraRef = useRef<Camera | null>(null);
+  const [hasPermission, setHasPermission] = useState(null);
+  const [photoUri, setPhotoUri] = useState(null);
+  const cameraRef = useRef(null);
 
   useEffect(() => {
     (async () => {
@@ -17,7 +17,7 @@ export default function CameraScreen() {
 
   const takePhoto = async () => {
     if (cameraRef.current) {
-      const photo: CameraCapturedPicture = await cameraRef.current.takePictureAsync();
+      const photo = await cameraRef.current.takePictureAsync();
       const fileName = `${Date.now()}.jpg`;
       const newPath = FileSystem.documentDirectory + fileName;
       await FileSystem.moveAsync({ from: photo.uri, to: newPath });
