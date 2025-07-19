@@ -4,29 +4,17 @@ const TOKEN_URL = 'https://oauth.fatsecret.com/connect/token';
 const CLIENT_ID = 'fe8d56f8784048b8be7aaee583fc05bd';
 const CLIENT_SECRET = 'd5cd784459a542c8a2d7742a171357e0';
 
-interface TokenResponse {
-  access_token: string;
-  expires_in: number;
-  token_type: string;
-  scope: string;
-}
-
-interface TokenCache {
-  accessToken: string | null;
-  expiry: number | null;
-}
-
-const tokenCache: TokenCache = {
+const tokenCache = {
   accessToken: null,
   expiry: null,
 };
 
-async function saveTokenToStore(token: string, expiry: number): Promise<void> {
+async function saveTokenToStore(token, expiry) {
   await SecureStore.setItemAsync('fatsecret_token', token);
   await SecureStore.setItemAsync('fatsecret_expiry', expiry.toString());
 }
 
-async function loadTokenFromStore(): Promise<void> {
+async function loadTokenFromStore() {
   const token = await SecureStore.getItemAsync('fatsecret_token');
   const expiryStr = await SecureStore.getItemAsync('fatsecret_expiry');
   const expiry = expiryStr ? parseInt(expiryStr, 10) : null;
@@ -37,7 +25,7 @@ async function loadTokenFromStore(): Promise<void> {
   }
 }
 
-async function isTokenValid(): Promise<boolean> {
+async function isTokenValid() {
   const now = Math.floor(Date.now() / 1000);
   return (
     tokenCache.accessToken !== null &&
@@ -46,7 +34,7 @@ async function isTokenValid(): Promise<boolean> {
   );
 }
 
-async function fetchNewToken(): Promise<string> {
+async function fetchNewToken() {
   const credentials = `${CLIENT_ID}:${CLIENT_SECRET}`;
   const encodedCreds = Buffer.from(credentials).toString('base64');
 
@@ -64,7 +52,7 @@ async function fetchNewToken(): Promise<string> {
     throw new Error(`Failed to fetch token: ${errorText}`);
   }
 
-  const data: TokenResponse = await response.json();
+  const data = await response.json();
   const now = Math.floor(Date.now() / 1000);
   const expiry = now + data.expires_in;
 
@@ -80,13 +68,13 @@ async function fetchNewToken(): Promise<string> {
  * Get a valid FatSecret access token.
  * Automatically loads and refreshes if needed.
  */
-export async function getAccessToken(): Promise<string> {
+export async function getAccessToken() {
   if (!tokenCache.accessToken || !tokenCache.expiry) {
     await loadTokenFromStore();
   }
 
   if (await isTokenValid()) {
-    return tokenCache.accessToken as string;
+    return tokenCache.accessToken;
   }
 
   return await fetchNewToken();
