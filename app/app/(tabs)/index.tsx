@@ -1,34 +1,38 @@
+import React, { useState } from 'react';
+import { Button, StyleSheet, View, Text } from 'react-native';
 import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
 import Camera from '../../components/Camera';
-
+import {useGoogleToken} from '../../components/services/GoogleAuth';
+import { createNote } from '../../components/Keep';
 
 export default function HomeScreen() {
+  const [message, setMessage] = useState('');
+
+  const handleConnectAndCreateNote = async () => {
+    try {
+      setMessage('🔐 Connexion en cours...');
+      const token = useGoogleToken(); // Connexion Google + récupération token
+      console.log('Token reçu :', token);
+      // await createNote(token); // Création note Google Keep
+      setMessage('✅ Note envoyée avec succès !');
+    } catch (error) {
+      console.warn('❌ Erreur :', error);
+      setMessage('❌ Erreur : ' + error.message);
+    }
+  };
+
   return (
+    <View style={{ flex: 1, }}>
       <Camera />
+      {/* <View style={{ marginVertical: 20 }}>
+        <Button title="Créer une note Google Keep" onPress={handleConnectAndCreateNote} />
+      </View>
+      {message && <Text style={{ marginTop: 20 }}>{message}</Text>} */}
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
-  },
+  // styles optionnels
 });

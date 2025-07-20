@@ -4,6 +4,8 @@ import { Platform } from 'react-native';
 
 import { HapticTab } from '@/components/HapticTab';
 import { IconSymbol } from '@/components/ui/IconSymbol';
+import { FontAwesome } from '@expo/vector-icons';
+
 import TabBarBackground from '@/components/ui/TabBarBackground';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
@@ -34,12 +36,20 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="explore"
+        name="search"
         options={{
-          title: 'Explore',
-          tabBarIcon: ({ color }) => <IconSymbol size={28} name="paperplane.fill" color={color} />,
+          title: 'search',
+          tabBarIcon: ({ color }) =><FontAwesome name="search" size={28} color={color} />
         }}
       />
+      <Tabs.Screen
+        name="explore"
+        options={{
+          title: 'Analyze',
+          tabBarIcon: ({ color }) => <FontAwesome size={28} name="barcode" color={color} />,
+        }}
+      />
+
     </Tabs>
   );
 }
